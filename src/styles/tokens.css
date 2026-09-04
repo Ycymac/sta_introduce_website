@@ -1,0 +1,67 @@
+@font-face {
+  font-family: 'VCR OSD Mono';
+  src: url('../assets/fonts/VCR_OSD_MONO.woff') format('woff');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/space-grotesk-latin-500-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Space Grotesk';
+  src: url('../assets/fonts/space-grotesk-latin-700-normal.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+  --canvas: #fafaf8;
+  --surface: #f2f2f4;
+  --inner-surface: #ffffff;
+  --ink: #07142d;
+  --ink-muted: #5e6876;
+  --accent: #002fa7;
+  --accent-bright: #174bd0;
+  --klein: #002fa7;
+  --on-accent: #ffffff;
+  --sta-navy: #002f63;
+  --sta-red: #fb2026;
+  --line: rgba(7, 20, 45, 0.15);
+  --line-strong: rgba(7, 20, 45, 0.32);
+  --grid: rgba(7, 20, 45, 0.065);
+  --shadow-sheet: 0 18px 60px rgba(7, 20, 45, 0.08);
+  --shadow-card: 0 1px 4px rgba(7, 20, 45, 0.08);
+  --display: 'VCR OSD Mono', 'Space Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+  --modern-display: 'Space Grotesk', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --body: 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  --page-max: 1216px;
+  --reading-max: 928px;
+  --section-space: clamp(96px, 12vw, 160px);
+}
+
+.site-root[data-theme='dark'] {
+  color-scheme: dark;
+  --canvas: #0a0a0b;
+  --surface: #1c1c1e;
+  --inner-surface: #2a2a2d;
+  --ink: #f8fafc;
+  --ink-muted: #b6bfcc;
+  --accent: #e7e9ee;
+  --accent-bright: #ffffff;
+  --klein: #5b7bff;
+  --on-accent: #0a0a0b;
+  --line: rgba(248, 250, 252, 0.16);
+  --line-strong: rgba(248, 250, 252, 0.32);
+  --grid: rgba(248, 250, 252, 0.055);
+  --shadow-sheet: 0 18px 60px rgba(0, 0, 0, 0.36);
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.18);
+}

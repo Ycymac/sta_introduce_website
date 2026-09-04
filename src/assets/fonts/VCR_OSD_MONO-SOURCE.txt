@@ -1,0 +1,8 @@
+VCR OSD Mono, Version 1.00 (2014), designer: MrManet.
+Source: https://www.wfonts.com/font/vcr-osd-mono
+Archive: https://static.wfonts.com/download/data/2016/03/27/vcr-osd-mono/vcr-osd-mono.zip
+The source page labels the font license as Free.
+
+This local copy is used only for short English identity, folio, date, and
+technical-label text. Chinese and long-form reading copy use the modern sans
+stack defined in tokens.css.

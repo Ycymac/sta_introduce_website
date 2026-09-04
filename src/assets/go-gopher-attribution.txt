@@ -1,0 +1,5 @@
+The Go gopher was designed by Renee French.
+The vector file gopher.original.svg was created by Takuya Ueda.
+Source: https://github.com/golang-samples/gopher-vector/blob/master/gopher.svg
+License: Creative Commons Attribution 3.0
+License URL: https://creativecommons.org/licenses/by/3.0/

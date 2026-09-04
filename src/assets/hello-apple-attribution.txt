@@ -1,0 +1,6 @@
+Hello (apple)
+Author: Noé M
+Source: https://lottiefiles.com/free-animation/hello-apple-AoREfCSh5U
+License: Lottie Simple License (see https://lottiefiles.com/page/license)
+
+This local JSON was supplied for use in the STA association website.

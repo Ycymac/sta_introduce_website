@@ -1,0 +1,167 @@
+.archive-section {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 720ms cubic-bezier(0.22, 1, 0.36, 1), transform 720ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.archive-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.direction-module,
+.evidence-panel,
+.alumni-panel,
+.growth-stage {
+  transition: border-color 240ms ease, background-color 240ms ease, transform 240ms ease, box-shadow 240ms ease;
+}
+
+.direction-module:hover,
+.evidence-panel:hover,
+.alumni-panel:hover,
+.growth-stage:hover {
+  border-color: var(--line-strong);
+}
+
+.direction-module:hover,
+.growth-stage:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-card);
+}
+
+.welcome-stage--complete .welcome-stage__hello,
+.welcome-stage--complete .welcome-stage__subtitle {
+  opacity: 1;
+}
+
+@keyframes hello-line {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes welcome-identity-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes welcome-logo-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes cursor-blink {
+  0%, 45% { opacity: 1; }
+  46%, 100% { opacity: 0; }
+}
+
+@keyframes hint-bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(4px); }
+}
+
+@keyframes value-rail {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .archive-section,
+  .archive-section.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .values-rail__track {
+    animation: none;
+    transform: none;
+  }
+
+  .welcome-stage__line path,
+  .type-cursor,
+  .welcome-stage__hint span {
+    animation: none;
+  }
+
+  .welcome-stage__line path {
+    stroke-dashoffset: 0;
+  }
+}
+
+.journey-record {
+  opacity: 0;
+  transform: translateX(18px) translateZ(var(--journey-depth, 0)) rotateY(var(--journey-tilt, 0deg));
+}
+
+.journey-record.is-visible {
+  opacity: 1;
+  transform: translateX(0) translateZ(var(--journey-depth, 0)) rotateY(var(--journey-tilt, 0deg));
+}
+
+.journey-record.is-visible:hover,
+.journey-record.is-visible:focus-within {
+  transform: translateY(-3px) translateZ(var(--journey-depth, 0)) rotateY(var(--journey-tilt, 0deg));
+}
+
+.journey-record.is-visible .journey-stop {
+  animation: journey-stop-in 460ms cubic-bezier(0.22, 1, 0.36, 1) var(--stop-delay, 0ms) both;
+}
+
+.alumni-section.is-visible .journey-cohort__node {
+  animation: journey-station-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.alumni-section.is-visible .journey-cohort:nth-of-type(2) .journey-cohort__node {
+  animation-delay: 220ms;
+}
+
+.alumni-section.is-visible .journey-cohort:nth-of-type(3) .journey-cohort__node {
+  animation-delay: 420ms;
+}
+
+.alumni-section.is-visible .journey-cohort:nth-of-type(4) .journey-cohort__node {
+  animation-delay: 620ms;
+}
+
+@keyframes journey-stop-in {
+  from { opacity: 0; transform: translateX(-7px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes journey-station-in {
+  from { opacity: 0.45; transform: translateX(-50%) translateZ(18px) scale(0.55); }
+  70% { transform: translateX(-50%) translateZ(18px) scale(1.12); }
+  to { opacity: 1; transform: translateX(-50%) translateZ(18px) scale(1); }
+}
+
+@media (max-width: 767px) {
+  @keyframes journey-station-in-mobile {
+    from { opacity: 0.45; transform: scale(0.55); }
+    70% { transform: scale(1.12); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .alumni-section.is-visible .journey-cohort__node {
+    animation-name: journey-station-in-mobile;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .journey-record,
+  .journey-record.is-visible {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+
+  .journey-record.is-visible .journey-stop,
+  .alumni-section.is-visible .journey-cohort__node {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+
+  .journey-route__rail-progress {
+    height: 100%;
+    transition: none;
+  }
+}

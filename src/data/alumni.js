@@ -4,7 +4,7 @@
 export const alumniJourneyMeta = {
   label: '部分校友去向',
   englishLabel: 'SELECTED JOURNEYS',
-  totalRecords: 21
+  totalRecords: 23
 }
 
 const origin = () => ({ type: 'origin', organization: 'STA', label: '出发' })
@@ -51,6 +51,8 @@ export const alumniCohorts = [
       person('2022-zhang-tianguo', '张*果', [stop('employment', '字节跳动', '入职', 'bytedance')]),
       person('2022-liu-yuxi', '刘*熙', [stop('employment', '阿里钉钉', '入职', 'dingtalk')]),
       person('2022-li-xinyu', '李*宇', [stop('employment', '哔哩哔哩', '入职', 'bilibili')]),
+      person('2022-yang-jiachao', '杨*超', [stop('employment', '虾皮', '入职', 'shopee')]),
+      person('2022-zheng-jiajun', '郑*俊', [stop('employment', '滴滴', '入职', 'didi')]),
       person('2022-zhang-ruitong', '张*彤', [stop('postgraduate', '山东大学', '升学')]),
       person('2022-huang-yuxin', '黄*欣', [stop('postgraduate', '西安电子科技大学', '升学')])
     ]

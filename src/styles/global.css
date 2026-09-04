@@ -1338,7 +1338,16 @@ code {
 
   .utility-dock {
     right: 12px;
-    bottom: 20px;
+    bottom: max(10px, env(safe-area-inset-bottom));
+    flex-direction: row;
+    gap: 0;
+    padding: 3px;
+  }
+
+  .theme-toggle,
+  .utility-dock__top {
+    width: 42px;
+    min-height: 42px;
   }
 
   .ambient-layer__mark {
@@ -2778,6 +2787,10 @@ code {
     padding-inline: 14px;
   }
 
+  .journey-tree2d-linear__body {
+    padding: 24px 14px 32px;
+  }
+
   .journey-tree2d__root {
     margin-left: 0;
     padding-top: 0;
@@ -2907,12 +2920,19 @@ code {
     font-size: 8px;
   }
 
+  .journey-records {
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: 0;
+    row-gap: 16px;
+  }
+
   .journey-record {
-    grid-template-columns: minmax(0, 1fr) 78px;
-    gap: 12px;
+    width: 100%;
+    grid-template-columns: minmax(0, 1fr) 92px;
+    gap: 14px;
     align-items: start;
     min-height: 0;
-    padding: 18px 0;
+    padding: 18px 14px;
     --journey-tilt: 0deg;
   }
 
@@ -2953,6 +2973,13 @@ code {
     grid-column: 1;
   }
 
+  .journey-record__identity h4,
+  .journey-stop__copy strong,
+  .journey-stop__copy small {
+    overflow-wrap: normal;
+    word-break: keep-all;
+  }
+
   .journey-record__stops {
     grid-column: 1;
     gap: 9px 20px;
@@ -2963,7 +2990,7 @@ code {
     grid-column: 2;
     grid-row: 1 / span 2;
     min-height: 78px;
-    padding-left: 10px;
+    padding-left: 12px;
   }
 
   .journey-record__terminal-image {
@@ -3035,12 +3062,13 @@ code {
   }
 
   .journey-record {
-    grid-template-columns: minmax(0, 1fr) 64px;
-    gap: 8px;
+    grid-template-columns: minmax(0, 1fr) 86px;
+    gap: 10px;
+    padding: 16px 12px;
   }
 
   .journey-record__terminal {
-    padding-left: 6px;
+    padding-left: 10px;
     font-size: 9px;
   }
 

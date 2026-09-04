@@ -3,11 +3,11 @@
     ref="target"
     class="journey-record journey-record--more"
     :class="{ 'is-visible': visible }"
-    aria-label="更多校友旅程"
+    aria-label="更多伙伴旅程"
   >
     <div class="journey-record__identity">
       <span class="journey-record__serial">……</span>
-      <h4>更多校友</h4>
+      <h4>更多伙伴</h4>
     </div>
 
     <div class="journey-record__more-copy">

@@ -65,6 +65,7 @@ import bytedanceAsset from '../../assets/alumni-icons/bytedance.png'
 import didiAsset from '../../assets/alumni-icons/didi.png'
 import dingtalkAsset from '../../assets/alumni-icons/dingtalk.png'
 import meituanAsset from '../../assets/alumni-icons/meituan.png'
+import shopeeAsset from '../../assets/alumni-icons/shopee.png'
 import tencentAsset from '../../assets/alumni-icons/tencent.png'
 import xiaohongshuAsset from '../../assets/alumni-icons/xiaohongshu.png'
 
@@ -75,6 +76,7 @@ const assetRegistry = {
   didi: didiAsset,
   dingtalk: dingtalkAsset,
   meituan: meituanAsset,
+  shopee: shopeeAsset,
   tencent: tencentAsset,
   xiaohongshu: xiaohongshuAsset
 }
@@ -194,7 +196,7 @@ export default defineComponent({
         const verticalOffset = (sideRank - (sideCount - 1) / 2) * 46
         const cohortRoot = cohortRoots[record.cohortIndex]
         const depth = (sideRank - (sideCount - 1) / 2) * 46 + side * 14
-        const terminalX = side * (248 + (sideRank % 2) * 26)
+        const terminalX = side * (218 + (sideRank % 2) * 18)
         const terminalY = cohortRoot.y + verticalOffset
         const terminalZ = depth
         const personNode = {
@@ -327,7 +329,10 @@ export default defineComponent({
       context.textBaseline = 'middle'
       context.shadowColor = palette.canvas
       context.shadowBlur = 5
-      context.fillText(`${node.stop.organization} · ${node.stop.label}`, point.x + branch.side * (radiusX + 10), point.y)
+      const label = branch.more ? node.stop.organization : `${node.stop.organization} · ${node.stop.label}`
+      const labelX = point.x + branch.side * (radiusX + 10)
+      const maxWidth = Math.max(64, branch.side < 0 ? labelX - 12 : viewport.value.width - labelX - 12)
+      context.fillText(label, labelX, point.y, maxWidth)
       context.restore()
     }
 

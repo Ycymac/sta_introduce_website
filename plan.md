@@ -75,7 +75,7 @@ The following information has not yet been provided:
 
 The site must create data slots and polished empty states only where information remains unavailable. It must not invent people, employers, schools, metrics, dates, testimonials, or association history.
 
-The supplied partial alumni dataset contains 21 journey records across the 21, 22, and 23 cohorts. Public rendering defaults to masked names and a visible `asOf` or `verifiedAt` date. Full names may replace masked names only after consent is confirmed.
+The supplied partial alumni dataset contains 23 journey records across the 21, 22, and 23 cohorts. Public rendering defaults to masked names and a visible `asOf` or `verifiedAt` date. Full names may replace masked names only after consent is confirmed.
 
 ## 5. Information Architecture
 
@@ -130,7 +130,7 @@ Content grouping:
 ```text
 STA / DEPARTURE
   -> 21级 / GRADUATED      6 employment destinations
-  -> 22级 / GRADUATED      4 employment destinations + 2 postgraduate destinations
+  -> 22级 / GRADUATED      6 employment destinations + 2 postgraduate destinations
   -> 23级 / INTERNSHIP     9 internship records, including sequential multi-company stops
 ```
 
@@ -138,11 +138,13 @@ The supplied records are partial, so the section must say `部分校友去向 / 
 
 #### Desktop composition
 
-- Use a narrow sticky cohort index on the left and a wide route canvas on the right.
-- The index shows `21 / 22 / 23`; the active cohort changes as its station crosses the reading focus line.
-- A continuous CSS/SVG-inspired 2.5D tree timeline runs through the canvas: `STA / DEPARTURE` is the root, the three cohorts are trunk nodes, and individual alumni records branch left/right into destination leaves.
-- Use CSS perspective, restrained translateZ layers, layered hairlines, and small contained destination images to create depth. The tree must remain readable as a timeline even if all 3D transforms are disabled.
-- Alternate records lightly around the route where width permits, but preserve chronological top-to-bottom reading order in the DOM.
+- Stack the two presentations vertically: a tall interactive spatial tree first, followed by the full two-dimensional route inside a disclosure that is closed by default.
+- The primary tree uses native Canvas 2D with a custom 3D projection. It opens in a readable front view, supports pointer/keyboard rotation, zoom, reset, and fullscreen, and does not depend on Three.js or WebGL.
+- Preserve the hierarchy `STA root -> cohort -> person -> ordered experience stops -> terminal leaf`. Multi-company internships must use multiple connected nodes rather than collapsing the route into one label.
+- Arrange 21, 22, and 23 as clearly separated vertical grade bands. Give the tree enough height that labels remain readable without relying on zoom.
+- Render final destinations as leaf-shaped nodes. Show one and only one dashed `正在被努力书写` leaf at the end of the whole tree; use `+` in each cohort count to communicate omitted records.
+- The secondary 2D disclosure restores the complete sticky cohort index and route-card timeline. The index shows `21 / 22 / 23`; the active cohort changes as its station crosses the reading focus line after expansion.
+- Alternate 2D records lightly around the route where width permits, but preserve chronological top-to-bottom reading order in the DOM.
 - Each record displays a masked public name, status label, and ordered route. Examples of route grammar:
 
 ```text
@@ -154,11 +156,15 @@ STA -> 美团 / 实习 -> 腾讯 / 实习
 
 - The terminal destination gets the strongest typographic weight and a small supplied image when available; organization text remains primary. No company SVG animation is rendered in this pass.
 - Do not use an infinite carousel, drag-only interaction, horizontal scroll dependency, or scroll hijacking.
+- In dark mode, names, organizations, status words, cohort pills, labels, and explanatory text use white/high-contrast ink. Tree branches and node outlines retain their original red/blue/cyan cohort colors.
 
 #### Mobile composition
 
-- Collapse to one natural vertical track with the route line on the left and all records on the right.
-- Cohort labels become ordinary section headers; disable the sticky cohort index.
+- Keep the spatial tree above the collapsed 2D disclosure, reduce its inline height deliberately, and retain fullscreen as the detailed inspection mode.
+- When the 2D disclosure is opened, collapse it to one natural vertical track with the route line on the left and all records on the right.
+- Cohort labels become ordinary section headers; disable the sticky cohort index in the expanded 2D view.
+- Render 2D records in one full-width column. Keep names and organization/status groups from breaking character by character, allow multi-stop routes to wrap by complete stop, and reserve enough width for the terminal destination block.
+- Use a compact horizontal mobile utility dock so theme/back-to-top controls do not cover the journey cards.
 - Preserve every stop and status in text even when the destination image is omitted or motion is disabled.
 - Keep tap targets at least `44x44px`; do not require hover to inspect a journey.
 
@@ -411,14 +417,15 @@ Shared rules:
 
 ## 8B. Alumni Destination Image Treatment
 
-The user supplied `C:\Users\<user>\Downloads\company_icons_svg_animation.md` as an initial visual reference, then supplied eight PNG images and asked that they replace the SVG marks. The PNGs are local decorative assets, not animated SVG components.
+The user supplied `C:\Users\<user>\Downloads\company_icons_svg_animation.md` as an initial visual reference, then supplied nine PNG images and asked that they replace the SVG marks. The PNGs are local decorative assets, not animated SVG components.
 
-The eight supplied PNGs are local decorative assets, not animated SVG components:
+The nine supplied PNGs are local decorative assets, not animated SVG components:
 
 ```text
 src/assets/alumni-icons/
   bytedance.png  meituan.png  ant.png  didi.png
   tencent.png    xiaohongshu.png  dingtalk.png  bilibili.png
+  shopee.png
 ```
 
 - Keep the original image proportions and render each asset in a small `object-fit: contain` box (roughly 36-48px); never upscale low-resolution source images.
@@ -489,6 +496,7 @@ src/
       xiaohongshu.png
       dingtalk.png
       bilibili.png
+      shopee.png
     logo/
     fonts/
   components/
@@ -504,6 +512,8 @@ src/
   components/alumni/
     JourneyRecord.vue
     CohortIndex.vue
+    JourneyTreeSpatial.vue
+    JourneyLinearTree.vue
     LearningMap.vue
     GrowthPath.vue
   data/
@@ -525,7 +535,7 @@ Implementation preferences:
 - Vue components plus CSS and platform APIs.
 - `IntersectionObserver` for reveal state.
 - `requestAnimationFrame` only for animation work that needs it.
-- No Three.js, WebGL, heavy animation framework, UI kit, or general CSS framework for this scope.
+- The spatial tree uses a dependency-free Canvas 2D projection; do not add Three.js, WebGL, a heavy animation framework, UI kit, or general CSS framework for this scope.
 - No backend, database, analytics, forms, or authentication in the framework phase.
 - Content must be held in structured local data, not scattered through presentation components.
 
@@ -571,7 +581,7 @@ Allowed stop types are `origin`, `offer`, `internship`, `employment`, `postgradu
 - Prefer SVG and optimized WebP/AVIF for future media.
 - Lazy-load below-the-fold images.
 - Avoid remote font and asset dependencies.
-- Do not ship alumni photos. Include only the eight supplied destination PNGs, rendered at small contained sizes and kept local/subpath-safe.
+- Do not ship alumni photos. Include only the nine supplied destination PNGs, rendered at small contained sizes and kept local/subpath-safe.
 - Welcome animation must be small and non-blocking.
 - Avoid cumulative layout shift by declaring aspect ratios.
 - Production build must complete without lint errors.
@@ -597,7 +607,7 @@ The initial implementation should include:
 - Ambient STA logo treatment and a documented placeholder boundary for exact paths.
 - Confirmed association copy, learning directions, and growth route.
 - A concise two-node origin timeline (April 2010 and the ongoing community) without invented intermediate history.
-- A populated, masked, structured alumni journey with 21 selected records across the 21, 22, and 23 cohorts.
+- A populated, masked, structured alumni journey with 23 selected records across the 21, 22, and 23 cohorts.
 - Coordinated route, station, and record entrance motion with a complete reduced-motion fallback; destination images remain static and small.
 - Keyboard and reduced-motion support.
 - Production build and lint verification.
@@ -615,7 +625,7 @@ The Sol review must check the implementation against this plan, including:
 - [ ] The two-semester path and foundation emphasis are accurate.
 - [ ] Selection standards use the approved public-facing tone.
 - [ ] No alumni, awards, metrics, companies, schools, or milestones are invented.
-- [ ] Exactly the supplied 21 partial alumni journeys are represented, grouped into 21, 22, and 23 cohorts, without inventing dates or majors.
+- [ ] Exactly the supplied 23 partial alumni journeys are represented, grouped into 21, 22, and 23 cohorts, without inventing dates or majors.
 - [ ] Public names are masked by default and the section clearly says that the records are selected/partial.
 - [ ] Sequential stops retain their supplied order, including multi-company internship routes.
 
@@ -628,7 +638,9 @@ The Sol review must check the implementation against this plan, including:
 - [ ] The ambient STA mark is still visibly discernible through the editorial sheet in both themes; the sheet is not effectively opaque.
 - [ ] Dark ambient logo uses white/red as requested.
 - [ ] Cards, pills, gradients, glow, and shadows remain restrained.
-- [ ] The outcome section reads as one 2.5D tree timeline: one trunk, cohort branches, and destination leaves rather than a two-panel archive.
+- [ ] The outcome section opens with a tall interactive spatial tree and follows with the prior full 2D route inside a disclosure that is closed by default.
+- [ ] The spatial tree preserves the same root/cohort/person/stop hierarchy as the 2D route; multi-stop internships use multiple connected nodes and final destinations use leaf shapes.
+- [ ] Dark-mode journey text is white/high-contrast while the tree geometry keeps its original red/blue/cyan colors.
 
 ### Interaction and responsive behavior
 
@@ -657,7 +669,7 @@ The Sol review must check the implementation against this plan, including:
 - [ ] Go mark uses the local standard vector, ends static, and retains its source/license record in project assets without the removed UI credit sentence.
 - [ ] Frontend mark contains distinct, recognizable HTML5 and CSS3 shields.
 - [ ] All three direction marks end static, honor reduced motion, and meet minimum mobile sizes.
-- [ ] The eight supplied destination images are local, aspect-ratio-preserving, displayed at small sizes, and mapped to the correct route stops.
+- [ ] The nine supplied destination images are local, aspect-ratio-preserving, displayed at small sizes, and mapped to the correct route stops.
 - [ ] No company SVG animation component is imported or rendered in the alumni journey.
 - [ ] University destinations retain complete text labels because no corresponding supplied image exists.
 - [ ] Alumni journey components preserve readable content when animation or JavaScript fails.

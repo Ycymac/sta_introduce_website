@@ -61,6 +61,7 @@ import bytedanceAsset from '../../assets/alumni-icons/bytedance.png'
 import didiAsset from '../../assets/alumni-icons/didi.png'
 import dingtalkAsset from '../../assets/alumni-icons/dingtalk.png'
 import meituanAsset from '../../assets/alumni-icons/meituan.png'
+import shopeeAsset from '../../assets/alumni-icons/shopee.png'
 import tencentAsset from '../../assets/alumni-icons/tencent.png'
 import xiaohongshuAsset from '../../assets/alumni-icons/xiaohongshu.png'
 
@@ -71,6 +72,7 @@ const assetRegistry = {
   didi: didiAsset,
   dingtalk: dingtalkAsset,
   meituan: meituanAsset,
+  shopee: shopeeAsset,
   tencent: tencentAsset,
   xiaohongshu: xiaohongshuAsset
 }

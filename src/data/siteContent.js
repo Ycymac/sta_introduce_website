@@ -50,7 +50,7 @@ export const growthPath = [
     ]
   },
   {
-    term: '大一下',
+    term: '大一下&之后',
     english: 'SPECIALIZATION',
     summary: '根据兴趣选择方向，在方向内继续学习。',
     steps: [

@@ -5,7 +5,7 @@
 - The project is a static Vue 3 association introduction site intended for GitHub Pages.
 - The agreed design direction is a modern digital yearbook/archive: Apple-like restraint, Swiss editorial structure, VCR-style short English labels, and a Klein-blue/white/red/black/gray palette.
 - The user authorized implementation. Luna completed the first Vue framework pass; the primary agent has visually checked the welcome page and is reconciling the Sol review.
-- Confirmed content now covers the association introduction, three Chinese-titled learning directions, a two-node origin story, the rough first-year training route, and 23 partial alumni journeys across the 21, 22, and 23 cohorts. Detailed intermediate historical milestones are still pending.
+- Confirmed content now covers the association introduction, three Chinese-titled learning directions, a two-node origin story, the rough first-year training route, and 24 partial alumni journeys across the 21, 22, and 23 cohorts. Detailed intermediate historical milestones are still pending.
 - The outcome section is now one `Alumni Journey`: a tall interactive spatial tree above the prior full 2D route, which is closed by default.
 
 ## Metadata
@@ -30,7 +30,7 @@ Plan and later build a pure frontend single-page introduction website for the So
 - In the second semester, students choose a direction based on interest and continue learning inside that direction.
 - Assessment considers both ability and attitude. The current stated policy is elimination of members whose assessments are poor and whose attitude is not serious.
 - The user describes the intended admission positioning as selective and excellence-oriented.
-- The user supplied 23 partial alumni records: 6 from the 21 cohort, 8 from the 22 cohort, and 9 internship journeys from the 23 cohort.
+- The user supplied 24 partial alumni records: 6 from the 21 cohort, 9 from the 22 cohort, and 9 internship journeys from the 23 cohort.
 
 ## User Preferences / Instructions
 
@@ -211,6 +211,11 @@ Plan and later build a pure frontend single-page introduction website for the So
 - Added two 22-cohort employment records: 杨*超 -> 虾皮 / 入职 and 郑*俊 -> 滴滴 / 入职. Added the supplied Shopee PNG as `src/assets/alumni-icons/shopee.png`; the public dataset now contains 23 masked records and 22 shows `08+`.
 - Browser QA on the dark theme confirmed the 2D disclosure is closed on a fresh load, the 3D canvas is approximately 850px tall at the tested desktop viewport, 23 records render in the expanded 2D view, the Shopee images load at restrained 24px/46px boxes, and exactly one 2D continuation record exists.
 - A real 390x844 Chrome device-emulation check covered both a single-stop 21-cohort route and multi-stop 23-cohort routes in dark and light themes. The mobile 2D record grid now uses one full-width column; identity/route/terminal content no longer collapses into character-by-character wrapping. The fixed utility dock is a shorter horizontal control on mobile to reduce content obstruction.
+
+### 2026-09-05 alumni data addition
+
+- Added the user-confirmed 22-cohort employment record 沈*霏 -> 小红书 / 入职 in `src/data/alumni.js`, reusing the existing Xiaohongshu image in both tree views. The 22-cohort count is now `09+`; the dataset total is 24.
+- The user explicitly requested committing and pushing this data update to GitHub (`origin/master`).
 
 ## Redaction Notes
 

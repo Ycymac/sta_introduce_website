@@ -75,7 +75,7 @@ The following information has not yet been provided:
 
 The site must create data slots and polished empty states only where information remains unavailable. It must not invent people, employers, schools, metrics, dates, testimonials, or association history.
 
-The supplied partial alumni dataset contains 23 journey records across the 21, 22, and 23 cohorts. Public rendering defaults to masked names and a visible `asOf` or `verifiedAt` date. Full names may replace masked names only after consent is confirmed.
+The supplied partial alumni dataset contains 24 journey records across the 21, 22, and 23 cohorts. Public rendering defaults to masked names and a visible `asOf` or `verifiedAt` date. Full names may replace masked names only after consent is confirmed.
 
 ## 5. Information Architecture
 
@@ -130,7 +130,7 @@ Content grouping:
 ```text
 STA / DEPARTURE
   -> 21级 / GRADUATED      6 employment destinations
-  -> 22级 / GRADUATED      6 employment destinations + 2 postgraduate destinations
+  -> 22级 / GRADUATED      7 employment destinations + 2 postgraduate destinations
   -> 23级 / INTERNSHIP     9 internship records, including sequential multi-company stops
 ```
 
@@ -607,7 +607,7 @@ The initial implementation should include:
 - Ambient STA logo treatment and a documented placeholder boundary for exact paths.
 - Confirmed association copy, learning directions, and growth route.
 - A concise two-node origin timeline (April 2010 and the ongoing community) without invented intermediate history.
-- A populated, masked, structured alumni journey with 23 selected records across the 21, 22, and 23 cohorts.
+- A populated, masked, structured alumni journey with 24 selected records across the 21, 22, and 23 cohorts.
 - Coordinated route, station, and record entrance motion with a complete reduced-motion fallback; destination images remain static and small.
 - Keyboard and reduced-motion support.
 - Production build and lint verification.
@@ -625,7 +625,7 @@ The Sol review must check the implementation against this plan, including:
 - [ ] The two-semester path and foundation emphasis are accurate.
 - [ ] Selection standards use the approved public-facing tone.
 - [ ] No alumni, awards, metrics, companies, schools, or milestones are invented.
-- [ ] Exactly the supplied 23 partial alumni journeys are represented, grouped into 21, 22, and 23 cohorts, without inventing dates or majors.
+- [ ] Exactly the supplied 24 partial alumni journeys are represented, grouped into 21, 22, and 23 cohorts, without inventing dates or majors.
 - [ ] Public names are masked by default and the section clearly says that the records are selected/partial.
 - [ ] Sequential stops retain their supplied order, including multi-company internship routes.
 

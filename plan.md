@@ -3,6 +3,206 @@
 > Status: Draft approved for framework implementation by user request on 2026-09-04.
 > This file is the implementation and code-review baseline. Any material visual, content, interaction, dependency, or deployment deviation must be called out explicitly.
 > Alumni Journey amendment approved by the user on 2026-09-04 and implemented in the current working tree.
+> 2026-09-13 portal-function amendment status: **APPROVED FOR IMPLEMENTATION.** The user authorized execution after reviewing this amendment.
+
+## 0. 2026-09-13 Portal Function Integration Amendment
+
+### 0.1 Goal and reference boundary
+
+Extend the current STA Digital Archive with the working user and recruitment flow found in `D:\allfiles\vuePro\NaXin\NaXin`, while preserving this site's existing visual language and responsive behavior.
+
+The reference project's **behavior and backend contract** are the source of truth for this amendment. Its visual styling is not to be copied. The implementation must:
+
+- add Home, Contact Us, Enrollment, Login, Logout, account registration, password reset, application status, application editing, and interview-time selection;
+- keep HTTP methods, endpoint paths, request field names, query/path parameters, token header names, and relevant response-field reads exactly compatible with NaXin;
+- keep the present editorial archive layout, typography, color roles, theme switching, ambient STA mark, motion restraint, accessibility, and local assets;
+- create purpose-built mobile layouts at `360px` and `390px`, not proportionally shrink the desktop UI;
+- implement only after explicit approval; approval was granted on 2026-09-13 and the implementation is now complete in the working tree.
+
+### 0.2 Navigation and route behavior
+
+Add a shared, keyboard-accessible archive navigation bar that remains visually consistent with the current masthead and utility dock.
+
+Use Hash history, matching NaXin's deploy-safe route model:
+
+| Route | Page | Access |
+| --- | --- | --- |
+| `/` | Existing STA Digital Archive home page | Public |
+| `/login` | Combined login / account registration / password reset page | Public |
+| `/register` | Recruitment status, requirements, location, contact, and progress page | Authenticated |
+| `/registerTable` | Initial application, application edit, or second-interview selection form | Authenticated |
+
+The shared navigation behavior must follow NaXin:
+
+- `主页`: navigate to `/`.
+- `联系我们`: if the home contact section is already mounted, smoothly scroll to it; otherwise navigate to `/`, wait for the route DOM to mount, then smoothly scroll to `#contact`. The route-and-scroll completion is an intentional reliability fix to NaXin's same behavior, not a change in user-visible semantics.
+- `报名`: visible only while logged in and navigate to `/register`.
+- `登录`: visible only while logged out and navigate to `/login`.
+- `退出登录`: visible only while logged in; clear both tokens and login state, navigate to `/`, and show a success notice.
+- After every route change, reset the page to the top unless the change was initiated by `联系我们` and has the pending contact-scroll intent.
+- If an unauthenticated user requests `/register` or `/registerTable`, redirect to `/` exactly as in NaXin.
+
+The mobile navigation must not squeeze five text actions into one row. At widths below `768px`, use a compact menu/drawer or two-level action layout with at least `44x44px` targets, visible focus, body-scroll control while open, Escape dismissal, and no overlap with the existing theme/back-to-top dock.
+
+### 0.3 Contact section
+
+Add a real `#contact` section to the home page and reuse the same contact-content component on the recruitment status page. Preserve NaXin's supplied content exactly unless the user later provides corrections:
+
+- 地理位置: `长安校区逸夫楼fz129`
+- 微信公众号: reference image `D:\allfiles\vuePro\NaXin\NaXin\src\assets\weixin.jpg`
+- QQ群: reference image `D:\allfiles\vuePro\NaXin\NaXin\src\assets\QQ.png`
+
+Copy the two images into this project's local asset tree during implementation; do not reference sibling-project absolute paths at runtime. Present them as archive evidence plates rather than generic cards, retain readable text labels beside QR imagery, provide useful alternative text, and keep the QR images large enough to scan. On mobile, stack location, WeChat, and QQ vertically with no horizontal overflow.
+
+### 0.4 Backend contract — preserve exactly
+
+Use Axios with JSON request/response headers and a 5000 ms timeout. Preserve NaXin's request contracts exactly:
+
+| Function | Method and endpoint | Exact parameters/body |
+| --- | --- | --- |
+| Account registration | `POST /user/register` | `{ email, code, password }` |
+| Password login | `POST /user/passwordLogin` | `{ email, password }` |
+| Refresh token | `POST /user/refreshToken` | no body |
+| Change password | `PUT /user/changePassword` | `{ email, code, password }` |
+| Password-reset code | `POST /email/password?email=${email}` | query parameter `email` |
+| Registration code | `POST /email/register?email=${email}` | query parameter `email` |
+| Add enrollment | `POST /enroll/add` | `{ number, name, majorClass, telephone, firstTime, intention }` |
+| Update enrollment | `PUT /enroll/update` | `{ number, name, majorClass, telephone, firstTime, intention }` |
+| Get enrollment | `GET /enroll/get` | no parameters |
+| Select second interview | `PUT /enroll/selectSecond/${timeId}` | path parameter `timeId` |
+| Get interview times | `GET /interviewTime/get/${type}` | path parameter `type` (`1` or `2`) |
+
+Preserve token behavior and response reads:
+
+- Password login is the only request that bypasses token injection.
+- Add `Authorization: <authorization>` whenever an authorization token exists.
+- For `/user/refreshToken`, also add `refreshToken: <refreshToken>` whenever it exists.
+- Successful login reads `res.data.data.authorization` and `res.data.data.refreshToken` after verifying `res.data.code === 200`.
+- Token refresh reads the same two fields after verifying `res.data.code === 200`.
+- Business warnings continue to use `res.data.message`; enrollment data and interview-time lists continue to read `res.data.data`.
+- Persist `authorization`, `refreshToken`, and the minimal recruitment UI state in Pinia persisted state, matching NaXin's reload behavior. Never log passwords, codes, tokens, or full personal enrollment payloads.
+
+Development requests use `/api` and a Vue CLI dev-server proxy to the user-supplied server at `https://101.200.60.135:8084`, stripping the `/api` prefix and accepting the reference server's current certificate behavior. The protocol and port follow NaXin until live connectivity verification proves otherwise. Production must use an environment-provided API base URL; secrets must not be placed in frontend environment variables. Before deployment, verify the production origin, certificate, CORS policy, and whether the backend permits the GitHub Pages domain. A development proxy does not make `/api` work on GitHub Pages.
+
+### 0.5 Account page behavior
+
+Keep NaXin's single-page three-mode account flow:
+
+1. Login: email and password.
+2. Register: email, registration code, password, repeated password.
+3. Forgot password: email, password-reset code, new password, repeated password.
+
+Keep validation semantics compatible with NaXin:
+
+- valid email format is required;
+- password length is 8–20 characters and must contain at least one letter and one digit;
+- registration/reset requires a non-empty code and matching passwords;
+- verification-code resend uses a 60-second disabled countdown;
+- successful account registration or password change returns to login mode;
+- successful login persists tokens and returns to `/`.
+
+Improve only interaction safety and accessibility: use a real submit button, prevent duplicate in-flight submission, show pending/disabled states, associate labels and errors with inputs, support Enter submission, stop timers on unmount, and remove NaXin's click-count joke behavior and credential-bearing console logs. These changes do not alter interface parameters.
+
+Visually, use a focused archival form sheet with the current fonts, hairlines, theme tokens, and restrained reveal motion. Do not introduce Element Plus's default visual language into the page.
+
+### 0.6 Recruitment status and application flow
+
+Preserve NaXin's enrollment status interpretation and button behavior:
+
+| `status` | Relevant `message` | Progress | Primary action |
+| --- | --- | --- | --- |
+| `0` | any / no data | 报名 | `报名` |
+| `1` | `已报名` | 一面进行中 | `修改报名信息` |
+| `1` | other | 一面未通过 | none |
+| `2` | `一面通过` | 二面进行中 | `选择二面时间` |
+| `2` | other | 二面未通过 | none |
+| `3` | any | 通过 | none |
+
+On `/register`, call `GET /enroll/get`, store `res.data.data`, and fall back to `{ status: 0, message: '未报名' }` when data is empty. Show the four stages `报名 → 一面 → 二面 → 通过`, but render them with the site's editorial timeline rather than an Element Plus stepper.
+
+Retain NaXin's currently supplied recruitment copy as data, not inline presentation text:
+
+- 面试要求: C 语言掌握到链表之前；会基本排序算法（例如冒泡排序）；能在电脑上完成常规题目。
+- 面试地点: `长安校区逸夫楼ff106`.
+- Recruitment timing must be moved to one configurable data module. Do not silently retain the reference's expired hard-coded 2025 dates as an active 2026 campaign. Until current dates are confirmed, show an honest `报名时间待公布` state while still allowing already-enrolled users to inspect server-returned status.
+
+On `/registerTable`:
+
+- exact input names are `number`, `name`, `majorClass`, `telephone`, `firstTime`, and `intention`;
+- directions remain exactly `前端`, `GO`, and `Java`;
+- telephone validation remains mainland mobile format `^1[3-9]\d{9}$`;
+- status `0` loads first-interview times with type `1` and submits `POST /enroll/add`;
+- status `1` loads first-interview times with type `1`, pre-fills current values, and submits `PUT /enroll/update`;
+- status `2` loads second-interview times with type `2`, locks identity/contact/direction fields, and submits `PUT /enroll/selectSecond/${timeId}`;
+- preserve source ordering for interview-time choices and navigate back to `/register` after success.
+
+### 0.7 Planned implementation structure
+
+Keep Vue 3 + Vue CLI 5. Add only the necessary compatible dependencies: `axios`, `vue-router@4`, `pinia`, and `pinia-plugin-persistedstate`. Avoid a framework migration and avoid importing Element Plus solely for messages or the progress display.
+
+Planned files:
+
+```text
+src/
+  api/
+    user.js
+    apply.js
+  router/
+    index.js
+  stores/
+    index.js
+    modules/user.js
+    modules/recruitment.js
+  utils/
+    request.js
+  views/
+    HomeView.vue
+    AccountView.vue
+    RecruitmentView.vue
+    ApplicationFormView.vue
+  components/
+    SiteNavigation.vue
+    ContactSection.vue
+    InlineNotice.vue
+  data/
+    recruitment.js
+```
+
+Refactor the existing archive composition into `HomeView.vue` without changing its section order or behavior. `App.vue` becomes the shared shell for navigation, ambient treatment where appropriate, and `<router-view>`. Existing section components remain intact unless the integration requires a narrowly scoped accessibility or layout fix.
+
+### 0.8 Mobile and responsive acceptance criteria
+
+- `320px` is the minimum supported width; perform primary checks at `360px`, `390px`, `768px`, `1024px`, and `1440px`.
+- Account and application forms become one column below `768px`; fields and selectors use full available width and never require horizontal scrolling.
+- Use `100svh`/natural minimum height instead of fixed `vh` form heights so browser chrome and validation text do not clip content.
+- Keep form text at least `16px` on mobile to avoid browser zoom; controls and nav actions are at least `44px` high.
+- QR images remain scan-capable and do not sit beside text in columns too narrow for either.
+- Sticky/fixed navigation must account for safe-area insets and must not cover headings, validation messages, the theme control, or the back-to-top control.
+- Both themes maintain readable contrast; focus, errors, status, and disabled state are not communicated by color alone.
+- Reduced-motion mode skips route/page reveal animation but preserves navigation and scroll targeting.
+
+### 0.9 Verification and code-review gate
+
+After approval and implementation, verify against this amendment:
+
+- static inspection that every endpoint, HTTP method, body key, query/path parameter, token header, and response-field read matches NaXin;
+- unit-level checks for validators, status-to-action mapping, route guards, token injection, and contact navigation from every route;
+- mocked API flow checks for login, registration code, account registration, password reset, logout, initial enrollment, enrollment edit, second-interview selection, empty enrollment data, business-code failure, timeout, and network failure;
+- browser checks for keyboard navigation, refresh persistence, protected-route redirect, Home, Contact Us, mobile menu, form submission, status timeline, and both themes;
+- responsive visual checks at `360`, `390`, `768`, `1024`, and `1440px`, including no horizontal overflow and QR readability;
+- `npm run lint`, `npm run build`, and `git diff --check` must pass;
+- production API connectivity must be verified separately from the development proxy before any GitHub Pages release is called complete.
+
+### 0.10 Approval boundary and open inputs
+
+This amendment is the implementation and review baseline. The user approved execution on 2026-09-13; completed code must continue to be reviewed against both this amendment and the existing archive requirements below.
+
+One release value remains intentionally unresolved because the NaXin source is stale:
+
+- current recruitment start/end timestamps;
+- the production deployment still requires verification that `https://101.200.60.135:8084` is reachable with a valid deployment-compatible TLS/CORS configuration.
+
+Their absence does not block local implementation with mocked/development flows, but it does block claiming that the live recruitment countdown or GitHub Pages API integration is production-ready.
 
 ## 1. Purpose
 

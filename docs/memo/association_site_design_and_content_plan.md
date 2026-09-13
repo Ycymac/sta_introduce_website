@@ -7,6 +7,9 @@
 - The user authorized implementation. Luna completed the first Vue framework pass; the primary agent has visually checked the welcome page and is reconciling the Sol review.
 - Confirmed content now covers the association introduction, three Chinese-titled learning directions, a two-node origin story, the rough first-year training route, and 24 partial alumni journeys across the 21, 22, and 23 cohorts. Detailed intermediate historical milestones are still pending.
 - The outcome section is now one `Alumni Journey`: a tall interactive spatial tree above the prior full 2D route, which is closed by default.
+- A 2026-09-13 portal-function amendment has been added to root `plan.md` after source-checking `D:\allfiles\vuePro\NaXin\NaXin`. It covers login, account registration/password reset, authenticated recruitment routes, enrollment status/edit/second-interview flows, Home/Contact behavior, and responsive acceptance criteria.
+- The user approved the amendment on 2026-09-13. The Vue Router, persisted Pinia state, Axios contract layer, account/recruitment/application views, shared navigation, and shared contact section are implemented in the working tree.
+- Development proxy target is the user-supplied server assumption `https://101.200.60.135:8084`; direct sandbox-external connection timed out, so protocol/port and production TLS/CORS remain unverified.
 
 ## Metadata
 
@@ -102,13 +105,40 @@ Plan and later build a pure frontend single-page introduction website for the So
 
 ## Next Steps
 
-1. Agree on the public-facing wording for selection, assessment, and learning attitude.
-2. Obtain detailed intermediate history milestones beyond the confirmed April 2010 and ongoing-community nodes.
-3. Confirm a public verification date and whether any full names have publication consent.
-4. Complete the remaining 360px/768px and fullscreen cross-browser checks; the expanded 2D route is already verified at 390px.
-5. Review the implementation against the approved plan and reconcile any remaining visual issues.
+1. Confirm the server protocol and port for `101.200.60.135`; `https:8084`, `http:8084`, `http:8080`, HTTP 80, and HTTPS 443 were unreachable during the 2026-09-13 check.
+2. Confirm current recruitment timestamps; the NaXin source contains expired 2025 dates, so the UI currently states `报名时间待公布`.
+3. Run credentialed staging validation only after the user supplies an authorized test account/code or performs that step directly; do not create accounts or submit real enrollment data speculatively.
+4. Agree on the public-facing wording for selection, assessment, and learning attitude.
+5. Obtain detailed intermediate history milestones beyond the confirmed April 2010 and ongoing-community nodes.
+6. Confirm a public verification date and whether any full names have publication consent.
 
 ## Incremental Updates
+
+### 2026-09-13 verification-code incident diagnosis
+
+- User observed `VM482:2 ... et.reportAllChanges ... startTime` while clicking the verification-code action.
+- Source/package inspection found no `startTime`, `reportAllChanges`, `web-vitals`, or Sentry integration in this project. The stack matches a Web Vitals/Sentry performance-observer defect and comes from anonymous/injected code, not the account view or Axios modules.
+- Clean in-app-browser verification did not reproduce that JavaScript exception. The page emitted `POST /email/register?email=qa@example.com`; Vue CLI then logged that it could not proxy the request to `https://101.200.60.135:8084` (`EACCES`). A direct sandbox-external curl to the same endpoint timed out before any HTTP response.
+- Current conclusion: frontend dispatch works; live backend reachability/configuration does not. Confirm backend service state, protocol, port, firewall/security-group rules, and reverse proxy before changing frontend request code.
+
+### 2026-09-13 portal-function planning
+
+- Inspected NaXin's `user.js`, `apply.js`, Axios interceptor, Hash routes/guard, persisted Pinia stores, top navigation, account flow, recruitment status page, and enrollment form.
+- Added a planning-only amendment to `plan.md` with exact API contracts, status mapping, planned project structure, Home/Contact semantics, current-style visual constraints, mobile behavior, and verification gates.
+- Chose to keep Vue 3 + Vue CLI 5 and add only Axios, Vue Router 4, Pinia, and persisted state after approval; Element Plus is not required for the target visual language.
+- Identified two release blockers that must not be guessed: current recruitment dates and a production-safe API origin. Local development can use the reference proxy target, but GitHub Pages cannot rely on the dev `/api` proxy.
+- No business code was changed. Next action is user review/approval of the amended plan.
+
+### 2026-09-13 portal-function implementation
+
+- User explicitly approved execution and supplied server IP `101.200.60.135`; the NaXin port/protocol assumption is `https://101.200.60.135:8084` pending confirmation.
+- Added Hash routes `/`, `/login`, `/register`, and `/registerTable`; protected recruitment routes redirect unauthenticated users to `/`.
+- Added persisted Pinia user/recruitment stores, Axios request/token interception, and API modules preserving all NaXin methods, paths, body keys, query/path parameters, and token header names.
+- Added the archive-styled account page (login/register/password reset), recruitment status/timeline page, application/edit/second-interview form, global Home/Contact/Login/Enrollment/Logout navigation, inline notices, and shared contact section with local WeChat/QQ QR assets.
+- Refactored the existing archive composition into `HomeView.vue`; the original sections, theme, ambient logo, and utility dock remain available through the shared application shell.
+- Added `scripts/portal-contract-mock.cjs` for local non-production flow verification without real credentials or personal data.
+- Verification: `npm run lint`, `npm run build`, and `git diff --check` pass. Browser QA covered 360px, 390px, and 1440px; there was no horizontal overflow, QR images were 210px at 390px, mobile menu/Contact/Home/auth guard worked, and the mocked login -> recruitment -> application submit -> status/edit -> logout path completed with no console errors.
+- Production build retains the pre-existing asset/entrypoint size warnings. Direct checks to the supplied IP on `https:8084`, `http:8084`, `http:8080`, HTTP 80, and HTTPS 443 did not connect; live backend integration remains unverified. No real credentials, verification codes, or personal enrollment data were transmitted.
 
 ### 2026-09-04T15:53:57+08:00
 - Created the memo from the first two planning turns and recorded the newly confirmed association and training information.
